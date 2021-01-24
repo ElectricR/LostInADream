@@ -1,0 +1,6 @@
+id 14
+scale 4
+layer 1000
+draw_realm 2
+total_frames 1
+new_stance 0 1

@@ -1,0 +1,6 @@
+id 18
+scale 2
+layer 2
+draw_realm 2
+total_frames 1
+new_stance 0 1
