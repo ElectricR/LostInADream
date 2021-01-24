@@ -1,5 +1,0 @@
-id 6
-scale 2
-frame_count 1
-layer 100
-draw_realm 0

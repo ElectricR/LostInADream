@@ -1,6 +1,0 @@
-id 16
-scale 4
-layer 2
-draw_realm 2
-total_frames 1
-new_stance 0 1

@@ -1,6 +1,0 @@
-id 5
-scale 2
-layer 100
-draw_realm 0
-total_frames 48
-new_stance 0 48
