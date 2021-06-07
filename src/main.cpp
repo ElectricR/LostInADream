@@ -1,27 +1,75 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <memory>
-#include <set>
-#include "Camera.h"
-#include "Globals.h"
-#include "DefaultRealmManager.h"
+#include "System.h"
+#include <iostream>
+
+//TODO
+#include <vector>
 #include "TextureController.h"
-#include "Renderer.h"
+#include "systems/RenderSystem.h"
+#include "components/CameraComponent.h"
 
+int main() {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cout << "Error in SDL initialization: " << SDL_GetError() << std::endl;
+    }
 
-int main(int argc, char* args[])
-{
-	SDL_Init(SDL_INIT_VIDEO);
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-	{
-		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-	}
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        std::cout << "Error in IMG initialization: " << SDL_GetError() << std::endl;
+    }
 
 	SDL_Window* window = SDL_CreateWindow("123", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1920, 1080, SDL_WINDOW_SHOWN);
+    if (window == nullptr) {
+        std::cout << "Error in window creation: " << SDL_GetError() << std::endl;
+    }
+
 	SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(sdl_renderer, 0x0, 0x0, 0x0, 0xFF);
-	SDL_Event e;
-	bool quitCalled = 0;
+	SDL_Event sdl_event;
+
+	bool quit_called = false;
+
+    // BEGIN TODO
+    std::vector<System*> systems; 
+
+    auto camera = std::make_shared<CameraComponent>();
+    auto player = std::make_shared<Entity>();
+    player->add_component(std::make_shared<RealComponent>(player.get()));
+    auto texturer = new TextureController(sdl_renderer);
+    auto player_tex = texturer->load_texture("player");
+    auto pl_vis = std::make_shared<VisibleComponent>(player.get(), player_tex);
+    player->add_component(pl_vis);
+    auto rs = new RenderSystem(sdl_renderer, camera);
+    rs->add(std::move(pl_vis));
+    systems.push_back(rs);
+
+    SDL_RenderClear(sdl_renderer);
+    // END TODO
+
+    while (true) {
+
+        //Brute-force quit. TODO
+        while (SDL_PollEvent(&sdl_event) != 0) {
+            if (sdl_event.type == SDL_QUIT) {
+                quit_called = true;
+            }
+            else if (sdl_event.type == SDL_KEYDOWN) {
+                if (sdl_event.key.keysym.sym == SDLK_ESCAPE) {
+                    quit_called = true;
+                }
+            }
+        }
+
+        for (auto &system : systems) {
+            system->update();
+        }
+
+		if (quit_called) {
+			break;
+		}
+		
+    }
+    /*
 	SDL_RenderClear(sdl_renderer);////////////////////////////////////?
 
 	int max_fps = 240;
@@ -35,11 +83,6 @@ int main(int argc, char* args[])
 	double render_time_ratio = 0;
 	uint32_t framePerSecondStartTime = SDL_GetTicks();
 	int frameCount = 0;
-
-	int mouse_x = 0;
-	int mouse_y = 0;
-	const uint8_t *current_key_states = 0;
-	uint32_t current_mouse_states = 0;
 
 	global::GameState current_game_state = global::GameState::DEFAULT;
 
@@ -67,20 +110,6 @@ int main(int argc, char* args[])
 		start_time = end_time;
 		lag += elapsed;
 		while (lag>= update_duration) {
-			while (SDL_PollEvent(&e) != 0) {
-				if (e.type == SDL_QUIT) {
-					quitCalled = true;
-				}
-				else if (e.type == SDL_KEYDOWN) {
-					if (e.key.keysym.sym == SDLK_ESCAPE) {
-						quitCalled = true;
-					}
-				}
-			}
-
-			/*Make sure to run check key state AFTER calling SDL_PollEvent*/
-			current_key_states = SDL_GetKeyboardState(NULL);
-			current_mouse_states = SDL_GetMouseState(&mouse_x, &mouse_y);
 
 			for (std::set<std::shared_ptr<BaseRealmManager>>::iterator 
 					it = managers.begin(); 
@@ -108,10 +137,6 @@ int main(int argc, char* args[])
 			framePerSecondStartTime = SDL_GetTicks();
 		}
 
-		if (quitCalled) {
-			break;
-		}
-		
 	end_time = SDL_GetTicks();
 		
 	if (end_time < planned_tick_time) {
@@ -123,4 +148,5 @@ int main(int argc, char* args[])
 	}
 
 	return 0;
+    */
 }
