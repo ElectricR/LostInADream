@@ -16,6 +16,7 @@ set(SOURCES
 	${SOURCE_PATH}/main.cpp
 	${SOURCE_PATH}/Entity.cpp
     ${SOURCE_PATH}/systems/RenderSystem.cpp
+    ${SOURCE_PATH}/systems/MassSystem.cpp
 	${SOURCE_PATH}/TextureController.cpp
     #[[    ${SOURCE_PATH}/DefaultActionHandler.cpp 
 	${SOURCE_PATH}/DefaultConstructor.cpp 

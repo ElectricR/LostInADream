@@ -9,8 +9,8 @@ void RenderSystem::update() {
     for (auto& component : components) {
         SDL_Rect frame_rect{ static_cast<int>(component->frame) * component->image_w, 
             0, component->image_w, component->image_h };
-        SDL_Rect dest_rect{ static_cast<int>(std::static_pointer_cast<RealComponent>(component->entity->get_component(ComponentTypeId::VISIBLE_COMPONENT))->x - camera->x),
-                static_cast<int>(std::static_pointer_cast<RealComponent>(component->entity->get_component(ComponentTypeId::VISIBLE_COMPONENT))->y - camera->y),
+        SDL_Rect dest_rect{ static_cast<int>(std::static_pointer_cast<RealComponent>(component->entity->get_component(ComponentTypeId::REAL_COMPONENT))->x - camera->x),
+                static_cast<int>(std::static_pointer_cast<RealComponent>(component->entity->get_component(ComponentTypeId::REAL_COMPONENT))->y - camera->y),
                 component->image_w,
                 component->image_h };
         if (component->entity->check_component(ComponentTypeId::ROTATABLE_COMPONENT)) {

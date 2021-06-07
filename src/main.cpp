@@ -7,7 +7,9 @@
 #include <vector>
 #include "TextureController.h"
 #include "systems/RenderSystem.h"
+#include "systems/MassSystem.h"
 #include "components/CameraComponent.h"
+
 
 int main() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -38,10 +40,15 @@ int main() {
     auto texturer = new TextureController(sdl_renderer);
     auto player_tex = texturer->load_texture("player");
     auto pl_vis = std::make_shared<VisibleComponent>(player.get(), player_tex);
+    auto pl_mas = std::make_shared<MassComponent>(player.get());
     player->add_component(pl_vis);
+    player->add_component(pl_mas);
     auto rs = new RenderSystem(sdl_renderer, camera);
     rs->add(std::move(pl_vis));
+    auto ms = new MassSystem();
+    ms->add(std::move(pl_mas));
     systems.push_back(rs);
+    systems.push_back(ms);
 
     SDL_RenderClear(sdl_renderer);
     // END TODO

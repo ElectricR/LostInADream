@@ -6,5 +6,6 @@ enum class ComponentTypeId : size_t {
     REAL_COMPONENT,
     CAMERA_COMPONENT,
     ROTATABLE_COMPONENT,
+    MOVEABLE_COMPONENT,
 };
 
