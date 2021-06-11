@@ -6,6 +6,6 @@ class MassComponent:
 {
 public:
     MassComponent(Entity *e):
-        Component(e, ComponentTypeId::MOVEABLE_COMPONENT)
+        Component(e, ComponentTypeId::MASS_COMPONENT)
     {}
 };

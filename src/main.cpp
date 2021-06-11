@@ -7,8 +7,10 @@
 #include <vector>
 #include "TextureController.h"
 #include "systems/RenderSystem.h"
+#include "systems/CollideSystem.h"
 #include "systems/MassSystem.h"
 #include "components/CameraComponent.h"
+#include "components/PlayerComponent.h"
 
 
 int main() {
@@ -35,20 +37,45 @@ int main() {
     std::vector<System*> systems; 
 
     auto camera = std::make_shared<CameraComponent>();
-    auto player = std::make_shared<Entity>();
-    player->add_component(std::make_shared<RealComponent>(player.get()));
+
     auto texturer = new TextureController(sdl_renderer);
+    auto rs = new RenderSystem(sdl_renderer, camera);
+    auto ms = new MassSystem();
+    auto cs = new CollideSystem();
+
+    auto player = std::make_shared<Entity>();
+    auto pl_rea = std::make_shared<RealComponent>(player.get());
+    pl_rea->x = 200;
+    player->add_component(pl_rea);
     auto player_tex = texturer->load_texture("player");
     auto pl_vis = std::make_shared<VisibleComponent>(player.get(), player_tex);
     auto pl_mas = std::make_shared<MassComponent>(player.get());
+    auto pl_col = std::make_shared<CollideComponent>(player.get(), 40, 40);
+    auto pl_pla = std::make_shared<PlayerComponent>(player.get());
     player->add_component(pl_vis);
     player->add_component(pl_mas);
-    auto rs = new RenderSystem(sdl_renderer, camera);
+    player->add_component(pl_col);
+    player->add_component(pl_pla);
     rs->add(std::move(pl_vis));
-    auto ms = new MassSystem();
     ms->add(std::move(pl_mas));
+    cs->add(std::move(pl_col));
+
+    auto plat = std::make_shared<Entity>();
+    auto pla_rea = std::make_shared<RealComponent>(plat.get());
+    pla_rea->x = 200;
+    pla_rea->y = 800;
+    plat->add_component(pla_rea);
+    auto plat_tex = texturer->load_texture("platform");
+    auto pla_vis = std::make_shared<VisibleComponent>(plat.get(), plat_tex);
+    auto pla_col = std::make_shared<CollideComponent>(plat.get(), 200, 40);
+    plat->add_component(pla_vis);
+    plat->add_component(pla_col);
+    rs->add(std::move(pla_vis));
+    cs->add(std::move(pla_col));
+
     systems.push_back(rs);
     systems.push_back(ms);
+    systems.push_back(cs);
 
     SDL_RenderClear(sdl_renderer);
     // END TODO
