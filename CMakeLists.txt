@@ -15,10 +15,10 @@ set(SOURCE_PATH src)
 set(SOURCES
 	${SOURCE_PATH}/main.cpp
 	${SOURCE_PATH}/Entity.cpp
-    ${SOURCE_PATH}/systems/RenderSystem.cpp
+    #${SOURCE_PATH}/systems/RenderSystem.cpp
     ${SOURCE_PATH}/systems/MassSystem.cpp
-    ${SOURCE_PATH}/systems/CollideSystem.cpp
-	${SOURCE_PATH}/TextureController.cpp
+    #${SOURCE_PATH}/systems/CollideSystem.cpp
+    #${SOURCE_PATH}/TextureController.cpp
     #[[    ${SOURCE_PATH}/DefaultActionHandler.cpp 
 	${SOURCE_PATH}/DefaultConstructor.cpp 
 	${SOURCE_PATH}/DefaultInputController.cpp
@@ -39,5 +39,4 @@ link_directories(${CMAKE_SOURCE_DIR}/lib/lib)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} SDL2_image)
-target_link_libraries(${PROJECT_NAME} SDL2)
+target_link_libraries(${PROJECT_NAME} glfw vulkan dl pthread X11 Xxf86vm Xrandr Xi)
