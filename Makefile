@@ -1,5 +1,5 @@
 all:
-	cmake -Bbuild
+	cmake -Bbuild -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
 build:
 	cd build/; make
