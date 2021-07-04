@@ -1,2 +1,6 @@
 build/
-crs/
+lib/
+
+.clangd/
+compile_commands.json
+
