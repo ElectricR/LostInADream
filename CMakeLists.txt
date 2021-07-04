@@ -37,6 +37,8 @@ set(SOURCES
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 link_directories(${CMAKE_SOURCE_DIR}/lib/lib)
 
+include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
+
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} glfw vulkan dl pthread X11 Xxf86vm Xrandr Xi)
