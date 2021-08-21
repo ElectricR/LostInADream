@@ -1,15 +1,16 @@
+#include "system/RenderSystem.h"
+
 #include <iostream>
-#include "Application.h"
+
+namespace loid {
+
+void init() {
+    loid::system::Renderer ren;
+}
+
+} // namespace loid
 
 int main() {
-    Application app;
-
-    try {
-        app.run();
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+    loid::init();
+    return 0;
 }
