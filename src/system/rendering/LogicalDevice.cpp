@@ -2,7 +2,19 @@
 
 
 #include <stdexcept>
+#include <set>
 #include <vector>
+
+#ifdef NDEBUG
+    constexpr static bool ENABLE_VALIDATION_LAYERS = false;
+#else
+    constexpr static bool ENABLE_VALIDATION_LAYERS = true;
+
+    const std::vector<const char *> required_validation_layers = {
+        "VK_LAYER_KHRONOS_validation"
+    };
+
+#endif
 
 const std::vector<const char*> device_extensions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
@@ -10,9 +22,11 @@ const std::vector<const char*> device_extensions = {
 
 loid::system::rendering::LogicalDevice::LogicalDevice(const VkInstance& instance, const VkSurfaceKHR& window) {
     this->pick_physical_device(instance, window);
+    this->create_logical_device();
 }
 
 loid::system::rendering::LogicalDevice::~LogicalDevice() {
+    vkDestroyDevice(device, nullptr);
 }
     
 void loid::system::rendering::LogicalDevice::pick_physical_device(const VkInstance &instance, const VkSurfaceKHR& window) {
@@ -85,3 +99,54 @@ loid::system::rendering::SwapChainSupportDetails loid::system::rendering::Logica
 
     return details;
 }
+
+void loid::system::rendering::LogicalDevice::create_logical_device() {
+    auto queue_create_infos = this->get_device_queues_info();
+
+    VkPhysicalDeviceFeatures device_features{};
+    device_features.samplerAnisotropy = VK_TRUE;
+
+    auto logical_device_create_info = this->get_logical_device_create_info(queue_create_infos, device_features);
+
+    if (vkCreateDevice(physical_device, &logical_device_create_info, nullptr, &device) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create logical device!");
+    }
+
+    vkGetDeviceQueue(device, queue_families->get_graphics_family_index(), 0, &graphics_queue);
+    vkGetDeviceQueue(device, queue_families->get_present_family_index(), 0, &present_queue);
+}
+
+std::vector<VkDeviceQueueCreateInfo> loid::system::rendering::LogicalDevice::get_device_queues_info() const noexcept {
+    std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
+    std::set<uint32_t> queue_required_families = { queue_families->get_graphics_family_index(), queue_families->get_present_family_index() };
+    float queue_priority = 1.f;
+
+    for (uint32_t queue_family_index : queue_required_families) {
+        VkDeviceQueueCreateInfo queue_create_info{};
+        queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queue_create_info.queueFamilyIndex = queue_family_index;
+        queue_create_info.queueCount = 1;
+        queue_create_info.pQueuePriorities = &queue_priority;
+        queue_create_infos.push_back(std::move(queue_create_info));
+    }
+
+    return queue_create_infos;
+}
+
+VkDeviceCreateInfo loid::system::rendering::LogicalDevice::get_logical_device_create_info(auto& queue_create_infos, auto& device_features) const noexcept {
+    VkDeviceCreateInfo logical_device_create_info{};
+    logical_device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    logical_device_create_info.pQueueCreateInfos = queue_create_infos.data();
+    logical_device_create_info.queueCreateInfoCount = static_cast<std::uint32_t>(queue_create_infos.size());
+    logical_device_create_info.pEnabledFeatures = &device_features;
+    logical_device_create_info.enabledExtensionCount = static_cast<uint32_t>(device_extensions.size());
+    logical_device_create_info.ppEnabledExtensionNames = device_extensions.data();
+
+    if constexpr (ENABLE_VALIDATION_LAYERS) {
+        logical_device_create_info.enabledLayerCount = static_cast<uint32_t>(required_validation_layers.size());
+        logical_device_create_info.ppEnabledLayerNames = required_validation_layers.data();
+    }
+
+    return logical_device_create_info;
+}
+

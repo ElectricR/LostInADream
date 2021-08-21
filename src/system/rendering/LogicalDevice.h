@@ -27,13 +27,24 @@ public:
 
 private:
     void pick_physical_device(const VkInstance&, const VkSurfaceKHR&);
+
     bool is_device_suitable(const VkPhysicalDevice&, const VkSurfaceKHR&) noexcept;
+    
     bool check_device_extension_support(const VkPhysicalDevice& physical_device) const noexcept;
+    
     SwapChainSupportDetails query_swap_chain_support(const VkPhysicalDevice&, const VkSurfaceKHR&) const noexcept;
+
+    void create_logical_device();
+
+    std::vector<VkDeviceQueueCreateInfo> get_device_queues_info() const noexcept;
+
+    VkDeviceCreateInfo get_logical_device_create_info(auto&, auto&) const noexcept;
 private:
     VkPhysicalDevice physical_device;
     VkDevice device;
     std::unique_ptr<QueueFamilies> queue_families;
+    VkQueue graphics_queue;
+    VkQueue present_queue;
 };
 
 } // namespace rendering

@@ -8,24 +8,24 @@
 #include <iostream>
 
 #ifdef NDEBUG
-    constexpr bool ENABLE_VALIDATION_LAYERS = false;
+    constexpr static bool ENABLE_VALIDATION_LAYERS = false;
 #else
-    constexpr bool ENABLE_VALIDATION_LAYERS = true;
+    constexpr static bool ENABLE_VALIDATION_LAYERS = true;
 
-const std::vector<const char *> required_validation_layers = {
-    "VK_LAYER_KHRONOS_validation"
-};
+    const std::vector<const char *> required_validation_layers = {
+        "VK_LAYER_KHRONOS_validation"
+    };
 
-static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(
-        VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
-        VkDebugUtilsMessageTypeFlagsEXT,
-        const VkDebugUtilsMessengerCallbackDataEXT* callback_data,
-        void*) {
-    if (message_severity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) {
-        std::cerr << "validation layer: " << callback_data->pMessage << std::endl;
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(
+            VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
+            VkDebugUtilsMessageTypeFlagsEXT,
+            const VkDebugUtilsMessengerCallbackDataEXT* callback_data,
+            void*) {
+        if (message_severity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) {
+            std::cerr << "validation layer: " << callback_data->pMessage << std::endl;
+        }
+        return VK_FALSE;
     }
-    return VK_FALSE;
-}
 
 #endif
 
