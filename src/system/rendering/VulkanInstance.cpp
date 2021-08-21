@@ -102,10 +102,6 @@ std::vector<const char *> loid::system::rendering::VulkanInstance::get_required_
 
     std::vector<const char*> extensions(glfw_extensions, glfw_extensions + glfw_extension_count);
 
-    for (auto t : extensions) {
-        std::cout << t << std::endl;
-    }
-
     if constexpr (ENABLE_VALIDATION_LAYERS) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
