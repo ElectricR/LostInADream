@@ -11,7 +11,7 @@ loid::system::Renderer::~Renderer() {
 
 loid::system::Renderer::Renderer() {
     window = std::make_unique<rendering::Window>();
-    vulkan_instance = std::make_shared<rendering::VulkanInstance>();
+    vulkan_instance = std::make_shared<rendering::Instance>();
     window->create_surface(vulkan_instance);
     logical_device = std::make_shared<rendering::LogicalDevice>(vulkan_instance->get_instance(), window->get_surface());
     swap_chain = std::make_unique<rendering::SwapChain>(*window, logical_device);

@@ -8,10 +8,10 @@ namespace system {
 
 namespace rendering {
 
-class VulkanInstance {
+class Instance {
 public:
-    VulkanInstance(); 
-    ~VulkanInstance();
+    Instance(); 
+    ~Instance();
 
     const VkInstance& get_instance() const noexcept {
         return instance;

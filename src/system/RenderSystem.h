@@ -20,7 +20,7 @@ private:
     // TODO
     // void _draw_temp();
 
-    std::shared_ptr<rendering::VulkanInstance> vulkan_instance;
+    std::shared_ptr<rendering::Instance> vulkan_instance;
     std::unique_ptr<rendering::Window> window;
     std::shared_ptr<rendering::LogicalDevice> logical_device;
     std::unique_ptr<rendering::SwapChain> swap_chain;

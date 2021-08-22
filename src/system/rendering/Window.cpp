@@ -1,6 +1,6 @@
 #include "Window.h"
+#include "utils.h"
 
-#include <stdexcept>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -29,16 +29,7 @@ void loid::system::rendering::framebuffer_resize_callback(GLFWwindow *glfw_windo
     window->framebuffer_updated = true;
 }
 
-void loid::system::rendering::Window::create_surface(std::shared_ptr<VulkanInstance> instance_ptr) {
+void loid::system::rendering::Window::create_surface(std::shared_ptr<Instance> instance_ptr) {
     instance = instance_ptr;
-    auto result = glfwCreateWindowSurface(instance.lock()->get_instance(), window, nullptr, &surface);
-
-    switch (result) {
-        case VK_SUCCESS:
-            return;
-        case VK_ERROR_EXTENSION_NOT_PRESENT:
-            throw std::runtime_error("Failed to create window surface: VK_ERROR_EXTENSION_NOT_PRESENT");
-        default:
-            throw std::runtime_error("Failed to create window surface");
-    }
+    check_vulkan_call(glfwCreateWindowSurface(instance.lock()->get_instance(), window, nullptr, &surface), "Failed to create window surface");
 }

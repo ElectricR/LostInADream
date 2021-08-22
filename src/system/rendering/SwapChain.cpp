@@ -1,4 +1,5 @@
 #include "SwapChain.h"
+#include "utils.h"
 
 
 #define GLFW_INCLUDE_VULKAN
@@ -39,9 +40,7 @@ void loid::system::rendering::SwapChain::create_swap_chain(Window& window) {
     std::array queue_family_indices = {queue_families.get_graphics_family_index(), queue_families.get_present_family_index()};
 
     VkSwapchainCreateInfoKHR swap_chain_info = this->create_swap_chain_info(context_details, surface_format, present_mode, extent, window.get_surface(), image_count, queue_family_indices);
-    if (vkCreateSwapchainKHR(logical_device->get_device(), &swap_chain_info, nullptr, &swap_chain) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create swap chain!");
-    }
+    check_vulkan_call(vkCreateSwapchainKHR(logical_device->get_device(), &swap_chain_info, nullptr, &swap_chain), "Failed to create swap chain");
     
     swap_chain_image_format = surface_format.format;
     swap_chain_extent = extent;

@@ -1,8 +1,8 @@
-#include "VulkanInstance.h"
+#include "Instance.h"
+#include "utils.h"
 
 #include <GLFW/glfw3.h>
 
-#include <stdexcept>
 #include <ranges>
 #include <vector>
 #include <iostream>
@@ -29,7 +29,7 @@
 
 #endif
 
-loid::system::rendering::VulkanInstance::~VulkanInstance() {
+loid::system::rendering::Instance::~Instance() {
     if constexpr (ENABLE_VALIDATION_LAYERS) {
         this->destroy_debug_utils_messenger();
     }
@@ -37,10 +37,10 @@ loid::system::rendering::VulkanInstance::~VulkanInstance() {
     vkDestroyInstance(instance, nullptr);
 }
 
-loid::system::rendering::VulkanInstance::VulkanInstance() {
+loid::system::rendering::Instance::Instance() {
     if constexpr (ENABLE_VALIDATION_LAYERS) {
         if (!this->check_validation_layer_support()) {
-            throw std::runtime_error("Validation layers requested, but not available!");
+            throw RenderingError("Validation layers requested, but not available!");
         }
     }
 
@@ -50,16 +50,14 @@ loid::system::rendering::VulkanInstance::VulkanInstance() {
 
     auto create_instance_info = this->get_instance_info(app_info, required_extensions, debug_messenger_info);
 
-    if (vkCreateInstance(&create_instance_info, nullptr, &instance) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create instance!");
-    }
+    check_vulkan_call(vkCreateInstance(&create_instance_info, nullptr, &instance), "Failed to create instance!");
 
     if constexpr (ENABLE_VALIDATION_LAYERS) {
         this->setup_debug_messanger(debug_messenger_info);
     }
 }
 
-bool loid::system::rendering::VulkanInstance::check_validation_layer_support() const noexcept {
+bool loid::system::rendering::Instance::check_validation_layer_support() const noexcept {
     uint32_t layer_count;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
@@ -78,7 +76,7 @@ bool loid::system::rendering::VulkanInstance::check_validation_layer_support() c
     return true;
 }
 
-VkApplicationInfo loid::system::rendering::VulkanInstance::get_app_info() const noexcept {
+VkApplicationInfo loid::system::rendering::Instance::get_app_info() const noexcept {
     VkApplicationInfo app_info {};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     app_info.pApplicationName = "Lost In A Dream";
@@ -91,13 +89,13 @@ VkApplicationInfo loid::system::rendering::VulkanInstance::get_app_info() const 
 }
 
 
-std::vector<const char *> loid::system::rendering::VulkanInstance::get_required_extensions() const {
+std::vector<const char *> loid::system::rendering::Instance::get_required_extensions() const {
     uint32_t glfw_extension_count = 0;
     const char** glfw_extensions;
     glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 
     if (!glfw_extensions) {
-        throw std::runtime_error("GLFW couldn't query required extensions");
+        throw RenderingError("GLFW couldn't query required extensions");
     }
 
     std::vector<const char*> extensions(glfw_extensions, glfw_extensions + glfw_extension_count);
@@ -109,7 +107,7 @@ std::vector<const char *> loid::system::rendering::VulkanInstance::get_required_
     return extensions;
 }
 
-VkDebugUtilsMessengerCreateInfoEXT loid::system::rendering::VulkanInstance::get_debug_messanger_info() const noexcept {
+VkDebugUtilsMessengerCreateInfoEXT loid::system::rendering::Instance::get_debug_messanger_info() const noexcept {
     VkDebugUtilsMessengerCreateInfoEXT debug_messenger_info{};
 
     debug_messenger_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -124,7 +122,7 @@ VkDebugUtilsMessengerCreateInfoEXT loid::system::rendering::VulkanInstance::get_
     return debug_messenger_info;
 }
 
-VkInstanceCreateInfo loid::system::rendering::VulkanInstance::get_instance_info(const VkApplicationInfo& app_info, const std::vector<const char *>& extensions, const VkDebugUtilsMessengerCreateInfoEXT& debug_messenger_info) const noexcept {
+VkInstanceCreateInfo loid::system::rendering::Instance::get_instance_info(const VkApplicationInfo& app_info, const std::vector<const char *>& extensions, const VkDebugUtilsMessengerCreateInfoEXT& debug_messenger_info) const noexcept {
 
     VkInstanceCreateInfo instance_info{};
     instance_info.pApplicationInfo = &app_info;
@@ -141,14 +139,14 @@ VkInstanceCreateInfo loid::system::rendering::VulkanInstance::get_instance_info(
     return instance_info;
 }
 
-void loid::system::rendering::VulkanInstance::setup_debug_messanger(const VkDebugUtilsMessengerCreateInfoEXT& debug_messenger_info) {
+void loid::system::rendering::Instance::setup_debug_messanger(const VkDebugUtilsMessengerCreateInfoEXT& debug_messenger_info) {
     if (this->create_debug_utils_messenger(debug_messenger_info) != VK_SUCCESS) {
         vkDestroyInstance(instance, nullptr);
-        throw std::runtime_error("failed to set up debug messenger!");
+        throw RenderingError("Failed to set up debug messenger!");
     }
 }
 
-VkResult loid::system::rendering::VulkanInstance::create_debug_utils_messenger(const VkDebugUtilsMessengerCreateInfoEXT& debug_messenger_info) {
+VkResult loid::system::rendering::Instance::create_debug_utils_messenger(const VkDebugUtilsMessengerCreateInfoEXT& debug_messenger_info) {
     auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
     if (func) {
         return func(instance, &debug_messenger_info, nullptr, &debug_messenger);
@@ -157,7 +155,7 @@ VkResult loid::system::rendering::VulkanInstance::create_debug_utils_messenger(c
     }
 }
 
-void loid::system::rendering::VulkanInstance::destroy_debug_utils_messenger() noexcept {
+void loid::system::rendering::Instance::destroy_debug_utils_messenger() noexcept {
     auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
     if (func) {
         func(instance, debug_messenger, nullptr);

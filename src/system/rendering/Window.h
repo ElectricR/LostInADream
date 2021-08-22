@@ -1,5 +1,5 @@
 #pragma once
-#include "VulkanInstance.h"
+#include "Instance.h"
 
 #include <vulkan/vulkan_core.h>
 
@@ -27,14 +27,14 @@ public:
         return window;
     }
 
-    void create_surface(std::shared_ptr<VulkanInstance>);
+    void create_surface(std::shared_ptr<Instance>);
 private:
     void init_window();
     friend void framebuffer_resize_callback(GLFWwindow*, int, int);
 private:
     VkSurfaceKHR surface;
     GLFWwindow *window = nullptr;
-    std::weak_ptr<VulkanInstance> instance;
+    std::weak_ptr<Instance> instance;
     bool framebuffer_updated = false;
 };
 

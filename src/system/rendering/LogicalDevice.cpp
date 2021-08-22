@@ -1,7 +1,7 @@
 #include "LogicalDevice.h"
+#include "utils.h"
 
 
-#include <stdexcept>
 #include <set>
 #include <vector>
 
@@ -38,7 +38,7 @@ void loid::system::rendering::LogicalDevice::pick_physical_device(const VkInstan
     vkEnumeratePhysicalDevices(instance, &device_count, nullptr);
 
     if (!device_count) {
-        throw std::runtime_error("Failed to find GPU with Vulkan support!");
+        throw RenderingError("Failed to find GPU with Vulkan support!");
     }
     
     std::vector<VkPhysicalDevice> devices(device_count);
@@ -46,7 +46,7 @@ void loid::system::rendering::LogicalDevice::pick_physical_device(const VkInstan
 
     auto device_it = std::find_if(devices.cbegin(), devices.cend(), [&](const VkPhysicalDevice &device_entry) { return this->is_device_suitable(device_entry, window); });
     if (device_it == devices.end()) {
-        throw std::runtime_error("Failed to find a suitable GPU!");
+        throw RenderingError("Failed to find a suitable GPU!");
     } 
     physical_device = *device_it;
 }
@@ -112,9 +112,7 @@ void loid::system::rendering::LogicalDevice::create_logical_device() {
 
     auto logical_device_create_info = this->get_logical_device_create_info(queue_create_infos, device_features);
 
-    if (vkCreateDevice(physical_device, &logical_device_create_info, nullptr, &device) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create logical device!");
-    }
+    check_vulkan_call(vkCreateDevice(physical_device, &logical_device_create_info, nullptr, &device), "Failed to create logical device");
 
     vkGetDeviceQueue(device, queue_families->get_graphics_family_index(), 0, &graphics_queue);
     vkGetDeviceQueue(device, queue_families->get_present_family_index(), 0, &present_queue);
