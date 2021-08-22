@@ -9,7 +9,7 @@ namespace system {
 
 namespace rendering {
 
-struct SwapChainSupportDetails {
+struct ContextDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> present_modes;

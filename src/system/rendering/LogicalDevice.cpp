@@ -28,6 +28,10 @@ loid::system::rendering::LogicalDevice::LogicalDevice(const VkInstance& instance
 loid::system::rendering::LogicalDevice::~LogicalDevice() {
     vkDestroyDevice(device, nullptr);
 }
+
+loid::system::rendering::ContextDetails loid::system::rendering::LogicalDevice::get_context_details(const VkSurfaceKHR& surface) const noexcept {
+    return this->query_context_details(this->physical_device, surface);
+}
     
 void loid::system::rendering::LogicalDevice::pick_physical_device(const VkInstance &instance, const VkSurfaceKHR& window) {
     uint32_t device_count = 0;
@@ -54,7 +58,7 @@ bool loid::system::rendering::LogicalDevice::is_device_suitable(const VkPhysical
 
     bool swap_chain_adequate = false;
     if (extensions_supported) {
-        SwapChainSupportDetails swap_chain_support = query_swap_chain_support(physical_device_entry, surface);
+        ContextDetails swap_chain_support = query_context_details(physical_device_entry, surface);
         swap_chain_adequate = !swap_chain_support.formats.empty() && !swap_chain_support.present_modes.empty();
     }
 
@@ -77,8 +81,8 @@ bool loid::system::rendering::LogicalDevice::check_device_extension_support(cons
     return std::all_of(required_extensions.cbegin(), required_extensions.cend(), [&available_extensions_strings](const std::string& ext) { return std::find(available_extensions_strings.cbegin(), available_extensions_strings.cend(), ext) != available_extensions_strings.end(); });
 }
 
-loid::system::rendering::SwapChainSupportDetails loid::system::rendering::LogicalDevice::query_swap_chain_support(const VkPhysicalDevice& physical_device_entry, const VkSurfaceKHR& surface) const noexcept {
-    SwapChainSupportDetails details;
+loid::system::rendering::ContextDetails loid::system::rendering::LogicalDevice::query_context_details(const VkPhysicalDevice& physical_device_entry, const VkSurfaceKHR& surface) const noexcept {
+    ContextDetails details;
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device_entry, surface, &details.capabilities);
 
     uint32_t format_count;

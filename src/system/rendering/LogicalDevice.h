@@ -1,6 +1,6 @@
 #pragma once
 #include "QueueFamilies.h"
-#include "SwapChainSupportDetails.h"
+#include "ContextDetails.h"
 
 #include <vulkan/vulkan_core.h>
 
@@ -25,15 +25,21 @@ public:
         return device;
     }
 
+    ContextDetails get_context_details(const VkSurfaceKHR&) const noexcept;
+
+    QueueFamilies get_queue_families() const noexcept {
+        return *queue_families;
+    }
+
 private:
     void pick_physical_device(const VkInstance&, const VkSurfaceKHR&);
 
     bool is_device_suitable(const VkPhysicalDevice&, const VkSurfaceKHR&) noexcept;
     
+    ContextDetails query_context_details(const VkPhysicalDevice&, const VkSurfaceKHR&) const noexcept;
+
     bool check_device_extension_support(const VkPhysicalDevice& physical_device) const noexcept;
     
-    SwapChainSupportDetails query_swap_chain_support(const VkPhysicalDevice&, const VkSurfaceKHR&) const noexcept;
-
     void create_logical_device();
 
     std::vector<VkDeviceQueueCreateInfo> get_device_queues_info() const noexcept;

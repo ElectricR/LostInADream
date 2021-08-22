@@ -23,6 +23,10 @@ public:
         return surface;
     }
 
+    GLFWwindow* get_window() noexcept {
+        return window;
+    }
+
     void create_surface(std::shared_ptr<VulkanInstance>);
 private:
     void init_window();

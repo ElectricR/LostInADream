@@ -20,6 +20,7 @@ set(SOURCES
     ${SOURCE_PATH}/system/rendering/QueueFamilies.cpp
     ${SOURCE_PATH}/system/rendering/Window.cpp
     ${SOURCE_PATH}/system/rendering/LogicalDevice.cpp
+    ${SOURCE_PATH}/system/rendering/SwapChain.cpp
 	)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
