@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.h"
-#include "LogicalDevice.h"
+#include "Device.h"
 
 #include <memory>
 
@@ -12,7 +12,7 @@ namespace rendering {
 
 class SwapChain {
 public:
-    SwapChain(Window&, std::shared_ptr<LogicalDevice>);
+    SwapChain(Window&, std::shared_ptr<Device>);
     
     ~SwapChain();
 
@@ -32,7 +32,7 @@ private:
 
     void create_swap_chain_image_views();
 private:
-    std::shared_ptr<LogicalDevice> logical_device;
+    std::shared_ptr<Device> logical_device;
 private:
     VkSwapchainKHR swap_chain{};
     std::vector<VkImage> swap_chain_images;

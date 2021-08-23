@@ -11,7 +11,7 @@ loid::system::rendering::SwapChain::~SwapChain() {
     vkDestroySwapchainKHR(logical_device->get_device(), swap_chain, nullptr);
 }
 
-loid::system::rendering::SwapChain::SwapChain(Window& window, std::shared_ptr<LogicalDevice> logical_device_ptr):
+loid::system::rendering::SwapChain::SwapChain(Window& window, std::shared_ptr<Device> logical_device_ptr):
     logical_device(logical_device_ptr)
 {
     int width = 0, height = 0;

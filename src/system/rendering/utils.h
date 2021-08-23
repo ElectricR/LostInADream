@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace loid {
 
@@ -29,6 +30,10 @@ public:
     VulkanException(VkResult result, const std::string& exc_text):
         RenderingError(exc_text + ": " + std::to_string(result))
     {}
+};
+
+static const std::vector<const char*> device_extensions = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
 }
