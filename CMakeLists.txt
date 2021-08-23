@@ -16,12 +16,16 @@ set(SOURCE_PATH src)
 set(SOURCES
 	${SOURCE_PATH}/main.cpp
     ${SOURCE_PATH}/system/RenderSystem.cpp
-    ${SOURCE_PATH}/system/rendering/VulkanInstance.cpp
+    ${SOURCE_PATH}/system/rendering/Instance.cpp
     ${SOURCE_PATH}/system/rendering/QueueFamilies.cpp
-    ${SOURCE_PATH}/system/rendering/Window.cpp
-    ${SOURCE_PATH}/system/rendering/LogicalDevice.cpp
+    ${SOURCE_PATH}/system/rendering/Device.cpp
     ${SOURCE_PATH}/system/rendering/SwapChain.cpp
     ${SOURCE_PATH}/system/rendering/utils.cpp
+    ${SOURCE_PATH}/system/rendering/wrappers/InstanceWrapper.cpp
+    ${SOURCE_PATH}/system/rendering/wrappers/LogicalDeviceWrapper.cpp
+    ${SOURCE_PATH}/system/rendering/wrappers/DebugMessangerWrapper.cpp
+    ${SOURCE_PATH}/system/rendering/wrappers/SurfaceWrapper.cpp
+    ${SOURCE_PATH}/system/rendering/wrappers/WindowWrapper.cpp
 	)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
